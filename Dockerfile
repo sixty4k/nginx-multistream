@@ -6,14 +6,15 @@ ENV NGINX_VERSION 1.17.9
 
 # https://launchpad.net/~savoury1/+archive/ubuntu/ffmpeg4
 RUN apt-get update && \
-    apt-get -y install software-properties-common && \
+    apt-get -y install \
+        software-properties-common \
+        wget && \
     add-apt-repository ppa:savoury1/graphics && \
     add-apt-repository ppa:savoury1/multimedia && \
     add-apt-repository ppa:savoury1/ffmpeg4 && \
     add-apt-repository ppa:savoury1/build-tools && \
     add-apt-repository ppa:savoury1/backports && \
     apt-get update && \
-    apt-get -y dist-upgrade && \
     apt-get -y install \
       build-essential \
     	libpcre3 \
@@ -26,15 +27,15 @@ RUN apt-get update && \
 
 WORKDIR /build
 
-RUN wget -O nginx.tar.gz https://nginx.org/download/nginx-$(NGINX_VERSION).tar.gz && \
+RUN wget -O nginx.tar.gz https://nginx.org/download/nginx-${NGINX_VERSION}.tar.gz && \
 	wget -O nginx-rtmp-module.zip https://github.com/arut/nginx-rtmp-module/archive/master.zip && \
 	tar -xf nginx.tar.gz  && \
 	unzip nginx-rtmp-module.zip  && \
-	pushd nginx-${NGINX_VERSION} && \
+	cd nginx-${NGINX_VERSION} && \
 	./configure --with-http_ssl_module --add-module=../nginx-rtmp-module-master && \
 	make && \
 	make install && \
-	popd && \
+	cd .. && \
 	rm -fr * && \
 	mkdir -p /opt/multistream/ && \
 	wget -O /opt/multistream/stat.xsl https://raw.githubusercontent.com/arut/nginx-rtmp-module/master/stat.xsl && \

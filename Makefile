@@ -1,4 +1,5 @@
 NGINX_VERSION = 1.17.9
+
 DOWNLOAD_FILES = \
 	nginx.tar.gz \
 	nginx-rtmp-module.zip \

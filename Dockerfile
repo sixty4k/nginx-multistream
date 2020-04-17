@@ -26,23 +26,21 @@ RUN apt-get update && \
 
 WORKDIR /build
 
-COPY nginx.tar.gz .
-COPY nginx-rtmp-module.zip .
-
-RUN tar -xf nginx.tar.gz
-RUN unzip nginx-rtmp-module.zip
-
-RUN cd nginx-${NGINX_VERSION} && ./configure --with-http_ssl_module --add-module=../nginx-rtmp-module-master
-RUN cd nginx-${NGINX_VERSION} && make
-RUN cd nginx-${NGINX_VERSION} && make install
-
-COPY stat.xsl /opt/multistream/stat.xsl/stat.xsl
-RUN chmod -R a+r /opt/multistream
+RUN wget -O nginx.tar.gz https://nginx.org/download/nginx-$(NGINX_VERSION).tar.gz && \
+	wget -O nginx-rtmp-module.zip https://github.com/arut/nginx-rtmp-module/archive/master.zip && \
+	tar -xf nginx.tar.gz  && \
+	unzip nginx-rtmp-module.zip  && \
+	pushd nginx-${NGINX_VERSION} && \
+	./configure --with-http_ssl_module --add-module=../nginx-rtmp-module-master && \
+	make && \
+	make install && \
+	popd && \
+	rm -fr * && \
+	mkdir -p /opt/multistream/ && \
+	wget -O /opt/multistream/stat.xsl https://raw.githubusercontent.com/arut/nginx-rtmp-module/master/stat.xsl && \
+	chmod -R a+r /opt/multistream
 
 WORKDIR /opt/multistream
-
-RUN apt-get clean
-RUN rm -rf /build
 
 EXPOSE 1935 8080
 CMD ["/usr/local/nginx/sbin/nginx"]

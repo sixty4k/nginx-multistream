@@ -6,7 +6,7 @@ This was cobbled together from instructions on the [OBS project forum](https://o
 
 ## Notes
 
-This was testing on macOS with Docker desktop
+This was tested on macOS with Docker desktop
 
 ## Running
 
